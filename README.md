@@ -19,7 +19,8 @@ npm install
 ### 2. Configuration
 Create a `.env` file in the root directory (one is already provided in this project):
 ```env
-VITE_API_BASE_URL=https://h7337u3o2i.execute-api.eu-north-1.amazonaws.com
+VITE_API_GET_URL=https://3eq6eifeo6.execute-api.eu-north-1.amazonaws.com
+VITE_API_POST_URL=https://h7337u3o2i.execute-api.eu-north-1.amazonaws.com/stage2
 ```
 
 ### 3. Run Development Server

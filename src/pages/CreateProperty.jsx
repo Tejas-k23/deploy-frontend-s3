@@ -1,5 +1,33 @@
 import React, { useState } from 'react';
-import { getPresignedUrl, uploadFileToS3, createProperty } from '../lib/api';
+import { Link } from 'react-router-dom';
+
+const API_POST_URL = import.meta.env.VITE_API_POST_URL || "https://h7337u3o2i.execute-api.eu-north-1.amazonaws.com/stage2";
+
+async function createPropertyWithImage(form, file) {
+    // 1) get presigned url
+    const presignRes = await fetch(`${API_POST_URL}/uploads/presign`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fileName: file.name, contentType: file.type })
+    });
+    const { uploadUrl, key } = await presignRes.json();
+
+    // 2) upload file to S3
+    const putRes = await fetch(uploadUrl, {
+        method: "PUT",
+        headers: { "Content-Type": file.type },
+        body: file
+    });
+    if (!putRes.ok) throw new Error("S3 upload failed");
+
+    // 3) save metadata to DynamoDB
+    const createRes = await fetch(`${API_POST_URL}/properties`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...form, imageKeys: [key] })
+    });
+    return createRes.json();
+}
 
 const CreateProperty = () => {
     const [formData, setFormData] = useState({
@@ -42,18 +70,13 @@ const CreateProperty = () => {
         setStatus({ type: '', message: '' });
 
         try {
-            // Step 1: Get presigned URL
-            const { uploadUrl, key } = await getPresignedUrl(file.name, file.type);
-
-            // Step 2: Upload to S3
-            await uploadFileToS3(uploadUrl, file);
-
-            // Step 3: Create property in DB
-            const result = await createProperty({
-                ...formData,
-                price: Number(formData.price),
-                imageKeys: [key]
-            });
+            const result = await createPropertyWithImage(
+                {
+                    ...formData,
+                    price: Number(formData.price)
+                },
+                file
+            );
 
             setStatus({
                 type: 'success',
@@ -81,6 +104,7 @@ const CreateProperty = () => {
 
     return (
         <div className="container">
+            <Link to="/" className="back-link">← View all properties</Link>
             <div className="card">
                 <h1>Add New Property</h1>
                 <form onSubmit={handleSubmit}>

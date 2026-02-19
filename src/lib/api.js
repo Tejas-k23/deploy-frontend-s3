@@ -1,7 +1,7 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://h7337u3o2i.execute-api.eu-north-1.amazonaws.com';
+const API_POST_URL = import.meta.env.VITE_API_POST_URL || 'https://h7337u3o2i.execute-api.eu-north-1.amazonaws.com/stage2';
 
 export const getPresignedUrl = async (fileName, contentType) => {
-  const response = await fetch(`${API_BASE_URL}/uploads/presign`, {
+  const response = await fetch(`${API_POST_URL}/uploads/presign`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -33,7 +33,7 @@ export const uploadFileToS3 = async (uploadUrl, file) => {
 };
 
 export const createProperty = async (propertyData) => {
-  const response = await fetch(`${API_BASE_URL}/properties`, {
+  const response = await fetch(`${API_POST_URL}/properties`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
