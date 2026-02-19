@@ -32,13 +32,11 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Verify build output
+        run: ls -la dist
+
       - name: Deploy to S3
-        run: |
-          aws s3 sync dist/ s3://${{ vars.S3_BUCKET }}/ --delete
+        run: aws s3 sync dist/ s3://${{ vars.S3_BUCKET }} --delete
 
       - name: CloudFront Invalidation (optional)
-        if: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID != '' }}
-        run: |
-          aws cloudfront create-invalidation \
-            --distribution-id "${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}" \
-            --paths "/*"
+        if: ${{ vars.CLO
