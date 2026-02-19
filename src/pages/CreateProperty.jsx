@@ -106,7 +106,7 @@ const CreateProperty = () => {
         <div className="container">
             <Link to="/" className="back-link">← View all properties</Link>
             <div className="card">
-                <h1>Add New Property</h1>
+                <h1>Add New Property to test github actione</h1>
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
                         <label htmlFor="title">Title *</label>
