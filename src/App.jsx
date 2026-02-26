@@ -11,9 +11,9 @@ function App() {
   const auth = useAuth();
 
   const signOutRedirect = () => {
-    const clientId = "786h0kv18ag887i842gta4vj0q";
-    const logoutUri = "https://dqhh7o5eaocpb.cloudfront.net/"; // Using the redirect_uri as logout_uri
-    const cognitoDomain = "https://eu-north-13tci1nu2w.auth.eu-north-1.amazoncognito.com"; // Extracted from authority or provided in cognito console
+    const clientId = "1hbg0up1kfmfmg4k1q3o6pkmc2";
+    const logoutUri = "https://dqhh7o5eaocpb.cloudfront.net";
+    const cognitoDomain = "https://eu-north-1j7pcniewi.auth.eu-north-1.amazoncognito.com";
     window.location.href = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(logoutUri)}`;
   };
 
@@ -31,9 +31,12 @@ function App() {
         <div className="App">
           <Navbar />
           <div style={{ padding: '1rem', background: '#f4f4f4', borderBottom: '1px solid #ddd' }}>
-            <p>Welcome, {auth.user?.profile.email}</p>
-            <button onClick={() => auth.removeUser()} className="auth-button">Sign out (Session)</button>
-            <button onClick={signOutRedirect} className="auth-button">Sign out (Cognito)</button>
+            <pre> Hello: {auth.user?.profile.email} </pre>
+            <pre> ID Token: {auth.user?.id_token} </pre>
+            <pre> Access Token: {auth.user?.access_token} </pre>
+            <pre> Refresh Token: {auth.user?.refresh_token} </pre>
+
+            <button onClick={() => auth.removeUser()}>Sign out</button>
           </div>
           <Routes>
             <Route path="/" element={<PropertyListing />} />
@@ -46,11 +49,9 @@ function App() {
   }
 
   return (
-    <div className="auth-page">
-      <h1>Welcome to AWS Property App</h1>
-      <p>Please sign in to continue</p>
-      <button onClick={() => auth.signinRedirect()} className="auth-button primary">Sign in</button>
-      <button onClick={() => signOutRedirect()} className="auth-button">Sign out</button>
+    <div>
+      <button onClick={() => auth.signinRedirect()}>Sign in</button>
+      <button onClick={() => signOutRedirect()}>Sign out</button>
     </div>
   );
 }
